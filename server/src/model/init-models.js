@@ -19,6 +19,7 @@ import _facility_price_history from  "./facility_price_history.js";
 import _hotel_reviews from  "./hotel_reviews.js";
 import _hotels from  "./hotels.js";
 import _job_role from  "./job_role.js";
+import _joinmenu from  "./joinmenu.js";
 import _members from  "./members.js";
 import _order_menu_detail from  "./order_menu_detail.js";
 import _order_menus from  "./order_menus.js";
@@ -53,20 +54,22 @@ import _vendor from  "./vendor.js";
 import _vendor_product from  "./vendor_product.js";
 import _work_order_detail from  "./work_order_detail.js";
 import _work_orders from  "./work_orders.js";
+
 const sequelize = new Sequelize(
-    process.env.DB_NAME,
-    process.env.DB_USER,
-    process.env.DB_PASS,
-    {
-      dialect: "postgres",
-      pool:{
-        max:5,
-        min: 0,
-        acquire: 30000,
-        idle:10000
-      }
-    }
+  process.env.DB_NAME,
+  process.env.DB_USER,
+  process.env.DB_PASS,
+  {
+    dialect: "postgres",
+    pool: {
+      max: 5,
+      min: 0,
+      acquire: 30000,
+      idle: 10000,
+    },
+  }
 );
+
 function initModels(sequelize) {
   const address = _address.init(sequelize, DataTypes);
   const bank = _bank.init(sequelize, DataTypes);
@@ -87,6 +90,7 @@ function initModels(sequelize) {
   const hotel_reviews = _hotel_reviews.init(sequelize, DataTypes);
   const hotels = _hotels.init(sequelize, DataTypes);
   const job_role = _job_role.init(sequelize, DataTypes);
+  const joinmenu = _joinmenu.init(sequelize, DataTypes);
   const members = _members.init(sequelize, DataTypes);
   const order_menu_detail = _order_menu_detail.init(sequelize, DataTypes);
   const order_menus = _order_menus.init(sequelize, DataTypes);
@@ -134,7 +138,7 @@ function initModels(sequelize) {
   booking_order_detail.hasMany(user_breakfast, { as: "user_breakfasts", foreignKey: "usbr_borde_id"});
   booking_order_detail.belongsTo(booking_orders, { as: "borde_boor", foreignKey: "borde_boor_id"});
   booking_orders.hasMany(booking_order_detail, { as: "booking_order_details", foreignKey: "borde_boor_id"});
-  booking_order_detail.belongsTo(facilities, { as: "facilities", foreignKey: "borde_faci_id"});
+  booking_order_detail.belongsTo(facilities, { as: "borde_faci", foreignKey: "borde_faci_id"});
   facilities.hasMany(booking_order_detail, { as: "booking_order_details", foreignKey: "borde_faci_id"});
   booking_orders.belongsTo(hotels, { as: "boor_hotel", foreignKey: "boor_hotel_id"});
   hotels.hasMany(booking_orders, { as: "booking_orders", foreignKey: "boor_hotel_id"});
@@ -200,6 +204,10 @@ function initModels(sequelize) {
   entity.hasOne(payment_gateway, { as: "payment_gateway", foreignKey: "paga_entity_id"});
   user_accounts.belongsTo(entity, { as: "usac_entity", foreignKey: "usac_entity_id"});
   entity.hasMany(user_accounts, { as: "user_accounts", foreignKey: "usac_entity_id"});
+  payment_transaction.belongsTo(user_accounts, { as: "patr_source", foreignKey: "patr_source_id"});
+  user_accounts.hasMany(payment_transaction, { as: "payment_transactions", foreignKey: "patr_source_id"});
+  payment_transaction.belongsTo(user_accounts, { as: "patr_target", foreignKey: "patr_target_id"});
+  user_accounts.hasMany(payment_transaction, { as: "patr_target_payment_transactions", foreignKey: "patr_target_id"});
   payment_transaction.belongsTo(users, { as: "patr_user", foreignKey: "patr_user_id"});
   users.hasMany(payment_transaction, { as: "payment_transactions", foreignKey: "patr_user_id"});
   user_accounts.belongsTo(users, { as: "usac_user", foreignKey: "usac_user_id"});
@@ -273,6 +281,7 @@ function initModels(sequelize) {
     hotel_reviews,
     hotels,
     job_role,
+    joinmenu,
     members,
     order_menu_detail,
     order_menus,
@@ -309,6 +318,7 @@ function initModels(sequelize) {
     work_orders,
   };
 }
-const model = initModels(sequelize);
-export default model;
+const models = initModels(sequelize);
+export default models;
+
 export { sequelize };

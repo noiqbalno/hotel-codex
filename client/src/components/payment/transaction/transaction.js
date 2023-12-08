@@ -102,6 +102,7 @@ const Transaction = () => {
                     {
                         getTransactionResult ?(
                             getTransactionResult.map((trx)=>{
+                                console.log(trx)
                                 return(
                                 <tr key={trx.patr_id} className='' >
                                     <th scope="row">{trx.patr_trx_number}</th>
@@ -114,8 +115,8 @@ const Transaction = () => {
                                         <td className='text-center'>{(trx.patr_credit !== 0 ? trx.patr_credit: formatRupiah(trx.patr_credit))}</td>
                                         <td className='text-center'>{trx.patr_note}</td>
                                         <td className='text-center'>{trx.patr_order_number}</td>
-                                        <td className='text-center'>{trx.patr_source_id}</td>
-                                        <td className='text-center'>{trx.patr_target_id}</td>
+                                        <td className='text-center'>{trx.patr_source.usac_account_number}</td>
+                                        <td className='text-center'>{trx.patr_target.usac_account_number}</td>
                                         <td className='text-center'>{trx.patr_trx_number_ref}</td>
                                         <td className='text-center'>{trx.patr_type}</td>
                                         <td className='text-center'>{trx.patr_user.user_full_name}</td>

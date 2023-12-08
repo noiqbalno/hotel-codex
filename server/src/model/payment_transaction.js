@@ -42,11 +42,19 @@ export default class payment_transaction extends Model {
     },
     patr_source_id: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
+      references: {
+        model: 'user_accounts',
+        key: 'usac_id'
+      }
     },
     patr_target_id: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
+      references: {
+        model: 'user_accounts',
+        key: 'usac_id'
+      }
     },
     patr_trx_number_ref: {
       type: DataTypes.STRING(55),
@@ -67,6 +75,18 @@ export default class payment_transaction extends Model {
     schema: 'payment',
     timestamps: false,
     indexes: [
+      {
+        name: "fki_payment_transaction_patr_source_id_fkey",
+        fields: [
+          { name: "patr_source_id" },
+        ]
+      },
+      {
+        name: "fki_payment_transaction_patr_target_id_fkey",
+        fields: [
+          { name: "patr_target_id" },
+        ]
+      },
       {
         name: "payment_transaction_patr_trx_number_patr_trx_number_ref_key",
         unique: true,

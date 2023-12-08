@@ -5,6 +5,7 @@ import bank from "../../model/bank.js"
 import payment_gateway from "../../model/payment_gateway.js"
 import entity from "../../model/entity.js"
 import users from "../../model/users.js"
+import payment_transaction from "../../model/payment_transaction.js"
 // import bank from "../../model/bank.js"
 
 
@@ -389,7 +390,8 @@ export const getTransactionSearch = async(req,res)=>{
                 include:[
                     {
                         model:users, as:'patr_user', attributes:['user_full_name'],required: true,
-                    }
+                        model: payment_transaction, as :'patr_source', required:true
+                    },
                 ],
             order: [
                 ['patr_id', 'ASC'],
@@ -403,6 +405,12 @@ export const getTransactionSearch = async(req,res)=>{
             include:[
                 {
                     model:users, as:'patr_user', attributes:['user_full_name'],required: true,
+                },
+                {
+                    model: user_accounts, as :'patr_source', required:true, attributes:['usac_account_number']
+                },
+                {
+                    model: user_accounts, as :'patr_target', required:true, attributes:['usac_account_number']
                 }
             ],order: [
                 ['patr_id', 'ASC'],
@@ -417,7 +425,14 @@ export const getTransactionSearch = async(req,res)=>{
             include:[
                 {
                     model:users, as:'patr_user', attributes:['user_full_name'],required: true,
-                }
+                },
+                {
+                    model: user_accounts, as :'patr_source', required:true, attributes:['usac_account_number']
+                },
+                {
+                    model: user_accounts, as :'patr_target', required:true, attributes:['usac_account_number']
+                },
+
             ],
             order: [
                 ['patr_id', 'ASC'],
@@ -429,7 +444,14 @@ export const getTransactionSearch = async(req,res)=>{
             include:[
                 {
                     model:users, as:'patr_user', attributes:['user_full_name'],required: true,
-                }
+                    
+                },
+                {
+                    model: user_accounts, as :'patr_source', required:true, attributes:['usac_account_number']
+                },
+                {
+                    model: user_accounts, as :'patr_target', required:true, attributes:['usac_account_number']
+                },
             ]
         })
     }

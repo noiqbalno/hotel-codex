@@ -11,11 +11,11 @@ export default class resto_menu_photos extends Model {
       primaryKey: true
     },
     remp_thumbnail_filename: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.STRING(50),
       allowNull: false
     },
     remp_photo_filename: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.STRING(50),
       allowNull: false
     },
     remp_prime: {

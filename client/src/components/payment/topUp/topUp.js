@@ -46,8 +46,8 @@ const TopUp = () => {
             saldo : saldo,
             saldoSource :saldoSource.split(',')[0], 
             saldoTarget : saldoTarget.split(',')[0], 
-            sourceAccountNumber: saldoSource.split(',')[2], 
-            targetAccountNumber: saldoTarget.split(',')[2],
+            sourceAccountNumber: saldoSource.split(',')[1], 
+            targetAccountNumber: saldoTarget.split(',')[1],
             userId:userId
         }
         Swal.fire({
