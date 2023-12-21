@@ -15,21 +15,26 @@ import {
 import Swal from "sweetalert2";
 import {MdHistory} from "react-icons/md";
 import {useForm} from "react-hook-form";
+import {getValue} from "@testing-library/user-event/dist/utils";
 
 export const Employee = () => {
     const {
         register,
         handleSubmit,
         reset,
-        setValue,
+        getValues,
         formState: {errors}
-    } = useForm()
+    } = useForm({
+        defaultValues: {
+            emp_national_id: ''
+        }
+    })
     const {
         register: register2,
         handleSubmit: handleSubmit2,
         reset: reset2,
         setValue: setValue2,
-        watch: watch2,
+        getValues: getValues2,
         formState: {errors: errors2}
     } = useForm()
     const [activeKeyword, setActiveKeyword] = useState('')
@@ -342,40 +347,88 @@ export const Employee = () => {
                                             <div className='col'>
                                                 <div className="form-floating">
                                                     <input
-                                                        type="number" {...register('emp_national_id', {
-                                                        required: true,
-                                                        maxLength:16
+                                                        type="text" {...register('emp_national_id', {
+                                                        required: "National ID (Wajib diisi)",
+                                                        pattern:
+                                                            {
+                                                                value: /^[0-9]+$/,
+                                                                message: "National ID (Hanya Angka)"
+                                                            },
+                                                        minLength:
+                                                            {
+                                                                value: 16,
+                                                                message: "National ID (Minimal 16 Digit)"
+                                                            },
+                                                        maxLength:
+                                                            {
+                                                                value: 16,
+                                                                message: "National ID (Maksimal 16 Digit)"
+                                                            },
                                                     })}
-                                                        className="form-control text-dark" placeholder='16 digit'
-                                                        id="National"
-                                                        required/>
-                                                    <label htmlFor="National">National ID</label>
+                                                        className={`form-control text-dark ${errors.emp_national_id ? "is-invalid" : ''}`}
+                                                        placeholder=''
+                                                        id="emp_national_id"
+                                                        aria-invalid={errors.emp_national_id ? "true" : "false"}/>
+                                                    <label
+                                                        htmlFor="emp_national_id">{errors.emp_national_id ? errors.emp_national_id.message !== '' ? errors.emp_national_id.message : "National ID" : "National ID"}</label>
                                                 </div>
                                             </div>
                                             <div className='col'>
                                                 <div className="form-floating">
-                                                    <input type="text" {...register('emp_fullname', {required: true})}
-                                                           className="form-control text-dark" id="dept"
-                                                           placeholder="name@example.com" required/>
-                                                    <label htmlFor="dept">Fullname</label>
+                                                    <input type="text" {...register('emp_fullname', {
+                                                        required: "Fullname (Wajib diisi)",
+                                                        pattern:
+                                                            {
+                                                                value: /^[a-zA-Z\s]+$/,
+                                                                message: "Fullname (Hanya Huruf)"
+                                                            },
+                                                        minLength:
+                                                            {
+                                                                value: 3,
+                                                                message: "Fullname (Minimal 3 Digit)"
+                                                            },
+                                                        maxLength:
+                                                            {
+                                                                value: 50,
+                                                                message: "Fullname (Maksimal 50 Digit)"
+                                                            },
+                                                    })}
+                                                           className={`form-control text-dark ${errors.emp_fullname ? "is-invalid" : ""}`}
+                                                           placeholder=''
+                                                           id="emp_fullname"
+                                                           aria-invalid={errors.emp_fullname ? "true" : "false"}/>
+                                                    <label
+                                                        htmlFor="emp_fullname">{errors.emp_fullname ? errors.emp_fullname.message !== '' ? errors.emp_fullname.message : "Fullname" : "Fullname"}</label>
                                                 </div>
                                             </div>
                                         </div>
                                         <div className='row mb-4'>
                                             <div className='col'>
                                                 <div className="form-floating">
-                                                    <input type="date" {...register('emp_birth_date', {required: true})}
-                                                           className="form-control text-dark" id="addEmp"
-                                                           placeholder="name@example.com" required/>
-                                                    <label htmlFor="addEmp">Birth Date</label>
+                                                    <input type="date" {...register('emp_birth_date', {
+                                                        required: "Birth Date (Wajib diisi)",
+                                                    })}
+                                                           className={`form-control text-dark ${errors.emp_birth_date ? "is-invalid" : ""}`}
+                                                           placeholder=''
+                                                           id="emp_birth_date"
+                                                           aria-invalid={errors.emp_birth_date ? "true" : "false"}/>
+                                                    <label
+                                                        htmlFor="emp_birth_date">{errors.emp_birth_date ? errors.emp_birth_date.message !== '' ? errors.emp_birth_date.message : "Birth Date" : "Birth Date"}
+                                                    </label>
                                                 </div>
                                             </div>
                                             <div className='col'>
                                                 <div className="form-floating">
-                                                    <input type="date" {...register('emp_hire_date', {required: true})}
-                                                           className="form-control text-dark" id="addEmp"
-                                                           placeholder="name@example.com" required/>
-                                                    <label htmlFor="addEmp">Hire Date</label>
+                                                    <input type="date" {...register('emp_hire_date', {
+                                                        required: "Hire Date (Wajib diisi)",
+                                                    })}
+                                                           className={`form-control text-dark ${errors.emp_hire_date ? "is-invalid" : ""}`}
+                                                           placeholder=''
+                                                           id="emp_hire_date"
+                                                           aria-invalid={errors.emp_hire_date ? "true" : "false"}/>
+                                                    <label
+                                                        htmlFor="emp_hire_date">{errors.emp_hire_date ? errors.emp_hire_date.message !== '' ? errors.emp_hire_date.message : "Hire Date" : "Hire Date"}
+                                                    </label>
                                                 </div>
                                             </div>
                                         </div>
@@ -431,19 +484,41 @@ export const Employee = () => {
                                             <div className='col'>
                                                 <div className="form-floating">
                                                     <input
-                                                        type="number" {...register('emp_vacation_hours', {required: true})}
-                                                        className="form-control text-dark" id="addEmp"
-                                                        placeholder="name@example.com" required/>
-                                                    <label htmlFor="addEmp">Vacation Hours</label>
+                                                        type="text" {...register('emp_vacation_hours', {
+                                                        required: "Vacation Hours (Wajib diisi)",
+                                                        pattern:
+                                                            {
+                                                                value: /^[0-9]+$/,
+                                                                message: "Vacation Hours (Hanya Angka)"
+                                                            },
+                                                    })}
+                                                        className={`form-control text-dark ${errors.emp_vacation_hours ? "is-invalid" : ''}`}
+                                                        placeholder=''
+                                                        id="emp_vacation_hours"
+                                                        aria-invalid={errors.emp_vacation_hours ? "true" : "false"}/>
+                                                    <label
+                                                        htmlFor="emp_vacation_hours">{errors.emp_vacation_hours ? errors.emp_vacation_hours.message !== '' ? errors.emp_vacation_hours.message : "Vacation Hours" : "Vacation Hours"}
+                                                    </label>
                                                 </div>
                                             </div>
                                             <div className='col'>
                                                 <div className="form-floating">
                                                     <input
-                                                        type="number" {...register('emp_sickleave_hours', {required: true})}
-                                                        className="form-control text-dark" id="addEmp"
-                                                        placeholder="name@example.com" required/>
-                                                    <label htmlFor="addEmp">Sick Leave Hours</label>
+                                                        type="text" {...register('emp_sickleave_hours', {
+                                                        required: "Sick Leave Hours (Wajib diisi)",
+                                                        pattern:
+                                                            {
+                                                                value: /^[0-9]+$/,
+                                                                message: "Sick Leave Hours (Hanya Angka)"
+                                                            },
+                                                    })}
+                                                        className={`form-control text-dark ${errors.emp_sickleave_hours ? "is-invalid" : ''}`}
+                                                        placeholder=''
+                                                        id="emp_sickleave_hours"
+                                                        aria-invalid={errors.emp_sickleave_hours ? "true" : "false"}/>
+                                                    <label htmlFor="emp_sickleave_hours">
+                                                        {errors.emp_sickleave_hours ? errors.emp_sickleave_hours.message !== '' ? errors.emp_sickleave_hours.message : "Sick Leave Hours" : "Sick Leave Hours"}
+                                                    </label>
                                                 </div>
                                             </div>
                                             <div className='col'>
@@ -492,11 +567,32 @@ export const Employee = () => {
                                 <div className='row mb-4'>
                                     <div className='col'>
                                         <div className="form-floating">
-                                            <input type="number" {...register('ephi_rate_salary', {required: true, maxLength: 16})}
-                                                   className="form-control text-dark" placeholder='16 digit'
-                                                   id="National"
-                                            />
-                                            <label htmlFor="National">Salary Rate</label>
+                                            <input
+                                                type="text" {...register('ephi_rate_salary', {
+                                                required: "Rate Salary (Wajib diisi)",
+                                                pattern:
+                                                    {
+                                                        value: /^[0-9]+$/,
+                                                        message: "Rate Salary (Hanya Angka)"
+                                                    },
+                                                minLength:
+                                                    {
+                                                        value: 6,
+                                                        message: "Rate Salary (Minimal 16 Digit)"
+                                                    },
+                                                maxLength:
+                                                    {
+                                                        value: 12,
+                                                        message: "Rate Salary (Maksimal 12 Digit)"
+                                                    },
+                                            })}
+                                                className={`form-control text-dark ${errors.ephi_rate_salary ? "is-invalid" : ''}`}
+                                                placeholder=''
+                                                id="ephi_rate_salary"
+                                                aria-invalid={errors.ephi_rate_salary ? "true" : "false"}/>
+                                            <label htmlFor="ephi_rate_salary">
+                                                {errors.ephi_rate_salary ? errors.ephi_rate_salary.message !== '' ? errors.ephi_rate_salary.message : "Rate Salary" : "Rate Salary"}
+                                            </label>
                                         </div>
                                     </div>
                                     <div className='col'>
@@ -521,7 +617,7 @@ export const Employee = () => {
                                                     <select className="form-select"
                                                             id="addEmp" {...register('edhi_dept_id', {required: true})}
                                                             aria-label="Floating label select example">
-                                                        {getDepartmentResult.map((value) => {
+                                                        {getDepartmentResult.data.map((value) => {
                                                             return (
                                                                 <option
                                                                     value={value.dept_id}>{value.dept_name}</option>
@@ -539,20 +635,30 @@ export const Employee = () => {
                                     </div>
                                     <div className='col'>
                                         <div className="form-floating">
-                                            <input type="date" {...register('edhi_start_date', {required: true})}
-                                                   className="form-control text-dark" placeholder='16 digit'
-                                                   id="National"
-                                            />
-                                            <label htmlFor="National">Start Date</label>
+                                            <input type="date" {...register('edhi_start_date', {
+                                                required: "Start Date (Wajib diisi)",
+                                            })}
+                                                   className={`form-control text-dark ${errors.edhi_start_date ? "is-invalid" : ""}`}
+                                                   placeholder=''
+                                                   id="edhi_start_date"
+                                                   aria-invalid={errors.edhi_start_date ? "true" : "false"}/>
+                                            <label htmlFor="edhi_start_date">
+                                                {errors.edhi_start_date ? errors.edhi_start_date.message !== '' ? errors.edhi_start_date.message : "Start Date" : "Start Date"}
+                                            </label>
                                         </div>
                                     </div>
                                     <div className='col'>
                                         <div className="form-floating">
-                                            <input type="date" {...register('edhi_end_date', {required: true})}
-                                                   className="form-control text-dark" placeholder='16 digit'
-                                                   id="National"
-                                            />
-                                            <label htmlFor="National">End Date</label>
+                                            <input type="date" {...register('edhi_end_date', {
+                                                required: "End Date (Wajib diisi)",
+                                            })}
+                                                   className={`form-control text-dark ${errors.edhi_end_date ? "is-invalid" : ""}`}
+                                                   placeholder=''
+                                                   id="edhi_end_date"
+                                                   aria-invalid={errors.edhi_end_date ? "true" : "false"}/>
+                                            <label htmlFor="edhi_end_date">
+                                                {errors.edhi_end_date ? errors.edhi_end_date.message !== '' ? errors.edhi_end_date.message : "End Date" : "End Date"}
+                                            </label>
                                         </div>
                                     </div>
                                 </div>
@@ -580,7 +686,8 @@ export const Employee = () => {
                                 }
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-dark" data-bs-dismiss="modal">Close
+                                <button type="button" className="btn btn-dark" data-bs-dismiss="modal"
+                                        onClick={() => reset()}>Close
                                 </button>
                                 <button type="submit" className="btn custom-btn-yellow">Submit
                                 </button>
@@ -611,40 +718,72 @@ export const Employee = () => {
                                                        hidden/>
                                                 <div className="form-floating">
                                                     <input
-                                                        type="number" {...register2('emp_national_id', {required: true})}
-                                                        className="form-control text-dark" placeholder='16 digit'
-                                                        id="National"
-                                                        required/>
-                                                    <label htmlFor="National">National ID</label>
+                                                        type="text" value={getValues2('emp_national_id')}
+                                                        className={`form-control text-dark ${errors.emp_national_id ? "is-invalid" : ''}`}
+                                                        placeholder=''
+                                                        id="emp_national_id"
+                                                        aria-invalid={errors.emp_national_id ? "true" : "false"}
+                                                        disabled/>
+                                                    <label
+                                                        htmlFor="emp_national_id">{errors.emp_national_id ? errors.emp_national_id.message !== '' ? errors.emp_national_id.message : "National ID" : "National ID"}</label>
                                                 </div>
                                             </div>
                                             <div className='col'>
                                                 <div className="form-floating">
-                                                    <input
-                                                        type="text" {...register2('emp_fullname', {required: true})}
-                                                        className="form-control text-dark" id="dept"
-                                                        placeholder="name@example.com" required/>
-                                                    <label htmlFor="dept">Fullname</label>
+                                                    <input type="text" {...register2('emp_fullname', {
+                                                        required: "Fullname (Wajib diisi)",
+                                                        pattern:
+                                                            {
+                                                                value: /^[a-zA-Z\s]+$/,
+                                                                message: "Fullname (Hanya Huruf)"
+                                                            },
+                                                        minLength:
+                                                            {
+                                                                value: 3,
+                                                                message: "Fullname (Minimal 3 Digit)"
+                                                            },
+                                                        maxLength:
+                                                            {
+                                                                value: 50,
+                                                                message: "Fullname (Maksimal 50 Digit)"
+                                                            },
+                                                    })}
+                                                           className={`form-control text-dark ${errors2.emp_fullname ? "is-invalid" : ""}`}
+                                                           placeholder=''
+                                                           id="emp_fullname"
+                                                           aria-invalid={errors2.emp_fullname ? "true" : "false"}/>
+                                                    <label
+                                                        htmlFor="emp_fullname">{errors2.emp_fullname ? errors2.emp_fullname.message !== '' ? errors2.emp_fullname.message : "Fullname" : "Fullname"}</label>
                                                 </div>
                                             </div>
                                         </div>
                                         <div className='row mb-4'>
                                             <div className='col'>
                                                 <div className="form-floating">
-                                                    <input
-                                                        type="date" {...register2('emp_birth_date', {required: true})}
-                                                        className="form-control text-dark" id="addEmp"
-                                                        placeholder="name@example.com" required/>
-                                                    <label htmlFor="addEmp">Birth Date</label>
+                                                    <input type="date" {...register2('emp_birth_date', {
+                                                        required: "Birth Date (Wajib diisi)",
+                                                    })}
+                                                           className={`form-control text-dark ${errors2.emp_birth_date ? "is-invalid" : ""}`}
+                                                           placeholder=''
+                                                           id="emp_birth_date"
+                                                           aria-invalid={errors2.emp_birth_date ? "true" : "false"}/>
+                                                    <label
+                                                        htmlFor="emp_birth_date">{errors2.emp_birth_date ? errors2.emp_birth_date.message !== '' ? errors2.emp_birth_date.message : "Birth Date" : "Birth Date"}
+                                                    </label>
                                                 </div>
                                             </div>
                                             <div className='col'>
                                                 <div className="form-floating">
-                                                    <input
-                                                        type="date" {...register2('emp_hire_date', {required: true})}
-                                                        className="form-control text-dark" id="addEmp"
-                                                        placeholder="name@example.com" required/>
-                                                    <label htmlFor="addEmp">Hire Date</label>
+                                                    <input type="date" {...register2('emp_hire_date', {
+                                                        required: "Hire Date (Wajib diisi)",
+                                                    })}
+                                                           className={`form-control text-dark ${errors2.emp_hire_date ? "is-invalid" : ""}`}
+                                                           placeholder=''
+                                                           id="emp_hire_date"
+                                                           aria-invalid={errors2.emp_hire_date ? "true" : "false"}/>
+                                                    <label
+                                                        htmlFor="emp_hire_date">{errors2.emp_hire_date ? errors2.emp_hire_date.message !== '' ? errors2.emp_hire_date.message : "Hire Date" : "Hire Date"}
+                                                    </label>
                                                 </div>
                                             </div>
                                         </div>
@@ -700,19 +839,41 @@ export const Employee = () => {
                                             <div className='col'>
                                                 <div className="form-floating">
                                                     <input
-                                                        type="number" {...register2('emp_vacation_hours', {required: true})}
-                                                        className="form-control text-dark" id="addEmp"
-                                                        placeholder="name@example.com" required/>
-                                                    <label htmlFor="addEmp">Vacation Hours</label>
+                                                        type="text" {...register2('emp_vacation_hours', {
+                                                        required: "Vacation Hours (Wajib diisi)",
+                                                        pattern:
+                                                            {
+                                                                value: /^[0-9]+$/,
+                                                                message: "Vacation Hours (Hanya Angka)"
+                                                            },
+                                                    })}
+                                                        className={`form-control text-dark ${errors2.emp_vacation_hours ? "is-invalid" : ''}`}
+                                                        placeholder=''
+                                                        id="emp_vacation_hours"
+                                                        aria-invalid={errors2.emp_vacation_hours ? "true" : "false"}/>
+                                                    <label
+                                                        htmlFor="emp_vacation_hours">{errors2.emp_vacation_hours ? errors2.emp_vacation_hours.message !== '' ? errors2.emp_vacation_hours.message : "Vacation Hours" : "Vacation Hours"}
+                                                    </label>
                                                 </div>
                                             </div>
                                             <div className='col'>
                                                 <div className="form-floating">
                                                     <input
-                                                        type="number" {...register2('emp_sickleave_hours', {required: true})}
-                                                        className="form-control text-dark" id="addEmp"
-                                                        placeholder="name@example.com" required/>
-                                                    <label htmlFor="addEmp">Sick Leave Hours</label>
+                                                        type="text" {...register2('emp_sickleave_hours', {
+                                                        required: "Sick Leave Hours (Wajib diisi)",
+                                                        pattern:
+                                                            {
+                                                                value: /^[0-9]+$/,
+                                                                message: "Sick Leave Hours (Hanya Angka)"
+                                                            },
+                                                    })}
+                                                        className={`form-control text-dark ${errors2.emp_sickleave_hours ? "is-invalid" : ''}`}
+                                                        placeholder=''
+                                                        id="emp_sickleave_hours"
+                                                        aria-invalid={errors2.emp_sickleave_hours ? "true" : "false"}/>
+                                                    <label htmlFor="emp_sickleave_hours">
+                                                        {errors2.emp_sickleave_hours ? errors2.emp_sickleave_hours.message !== '' ? errors2.emp_sickleave_hours.message : "Sick Leave Hours" : "Sick Leave Hours"}
+                                                    </label>
                                                 </div>
                                             </div>
                                             <div className='col'>
@@ -763,11 +924,31 @@ export const Employee = () => {
                                     <div className='col'>
                                         <div className="form-floating">
                                             <input
-                                                type="number" {...register2('ephi_rate_salary', {required: true})}
-                                                className="form-control text-dark" placeholder='16 digit'
-                                                id="National"
-                                            />
-                                            <label htmlFor="National">Salary Rate</label>
+                                                type="text" {...register2('ephi_rate_salary', {
+                                                required: "Rate Salary (Wajib diisi)",
+                                                pattern:
+                                                    {
+                                                        value: /^[0-9]+$/,
+                                                        message: "Rate Salary (Hanya Angka)"
+                                                    },
+                                                minLength:
+                                                    {
+                                                        value: 6,
+                                                        message: "Rate Salary (Minimal 16 Digit)"
+                                                    },
+                                                maxLength:
+                                                    {
+                                                        value: 12,
+                                                        message: "Rate Salary (Maksimal 12 Digit)"
+                                                    },
+                                            })}
+                                                className={`form-control text-dark ${errors2.ephi_rate_salary ? "is-invalid" : ''}`}
+                                                placeholder=''
+                                                id="ephi_rate_salary"
+                                                aria-invalid={errors2.ephi_rate_salary ? "true" : "false"}/>
+                                            <label htmlFor="ephi_rate_salary">
+                                                {errors2.ephi_rate_salary ? errors2.ephi_rate_salary.message !== '' ? errors2.ephi_rate_salary.message : "Rate Salary" : "Rate Salary"}
+                                            </label>
                                         </div>
                                     </div>
                                     <div className='col'>
@@ -792,7 +973,7 @@ export const Employee = () => {
                                                     <select className="form-select"
                                                             id="addEmp" {...register2('edhi_dept_id', {required: true})}
                                                             aria-label="Floating label select example">
-                                                        {getDepartmentResult.map((value) => {
+                                                        {getDepartmentResult.data.map((value) => {
                                                             return (
                                                                 <option value={value.dept_id}>{value.dept_name}</option>
                                                             )
@@ -810,20 +991,30 @@ export const Employee = () => {
                                     </div>
                                     <div className='col'>
                                         <div className="form-floating">
-                                            <input type="date" {...register2('edhi_start_date', {required: true})}
-                                                   className="form-control text-dark" placeholder='16 digit'
-                                                   id="National"
-                                            />
-                                            <label htmlFor="National">Start Date</label>
+                                            <input type="date" {...register2('edhi_start_date', {
+                                                required: "Start Date (Wajib diisi)",
+                                            })}
+                                                   className={`form-control text-dark ${errors2.edhi_start_date ? "is-invalid" : ""}`}
+                                                   placeholder=''
+                                                   id="edhi_start_date"
+                                                   aria-invalid={errors2.edhi_start_date ? "true" : "false"}/>
+                                            <label htmlFor="edhi_start_date">
+                                                {errors2.edhi_start_date ? errors2.edhi_start_date.message !== '' ? errors2.edhi_start_date.message : "Start Date" : "Start Date"}
+                                            </label>
                                         </div>
                                     </div>
                                     <div className='col'>
                                         <div className="form-floating">
-                                            <input type="date" {...register2('edhi_end_date', {required: true})}
-                                                   className="form-control text-dark" placeholder='16 digit'
-                                                   id="National"
-                                            />
-                                            <label htmlFor="National">End Date</label>
+                                            <input type="date" {...register2('edhi_end_date', {
+                                                required: "End Date (Wajib diisi)",
+                                            })}
+                                                   className={`form-control text-dark ${errors2.edhi_end_date ? "is-invalid" : ""}`}
+                                                   placeholder=''
+                                                   id="edhi_end_date"
+                                                   aria-invalid={errors2.edhi_end_date ? "true" : "false"}/>
+                                            <label htmlFor="edhi_end_date">
+                                                {errors2.edhi_end_date ? errors2.edhi_end_date.message !== '' ? errors2.edhi_end_date.message : "End Date" : "End Date"}
+                                            </label>
                                         </div>
                                     </div>
                                 </div>

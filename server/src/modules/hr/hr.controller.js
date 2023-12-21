@@ -14,15 +14,46 @@ import users from "../../model/users.js";
  */
 export const getDepartment = async (req, res) => {
     try { //order: [['id','DESC']], include: [Users]
-        const {dept_name} = req.body
-        const search = await models.department.findAll({
+        const {dept_name, offset, limit} = req.body
+        const total = await models.department.count({
             where: {
                 dept_name: {
                     [Op.iLike]: `%${dept_name ? dept_name : ''}%`
                 }
             }
         })
-        res.status(200).json(search)
+        // console.log(Math.ceil(14/5))
+        const search = await models.department.findAll({
+            offset: offset ? limit * (offset - 1) : 0,
+            limit: limit,
+            where: {
+                dept_name: {
+                    [Op.iLike]: `%${dept_name ? dept_name : ''}%`
+                }
+            }
+        })
+        const maxPage = Math.ceil(total / limit)
+        const numShowPage = 5
+        let pageNum = []
+        pageNum.push(parseInt(offset))
+        const beforeAfter = (offset === 2 || offset === maxPage-1?Math.floor(numShowPage/2)+1:offset === 1 || offset === maxPage? numShowPage-1:Math.floor(numShowPage/2))
+        if (pageNum.length <= numShowPage){
+            let i = 1
+            let num = parseInt(offset) +1
+            while (i <= beforeAfter && pageNum.length <= numShowPage && num <= maxPage) {
+                pageNum.push(num++)
+                i++
+            }
+        }
+        if (pageNum.length <= numShowPage){
+            let i = 1
+            let num = offset-1
+            while (i <= beforeAfter && pageNum.length <= numShowPage && num >= 1) {
+                pageNum.unshift(num--)
+                i++
+            }
+        }
+        res.status(200).json({data: search, maxPagination: maxPage, pageNum})
     } catch (e) {
         res.status(500).json(e.message)
     }
@@ -185,7 +216,6 @@ export const updateEmployee = async (req, res) => {
             finalImageUrl = req.body.oldImage
         }
         const update = await models.employee.update({
-            emp_national_id: req.body.emp_national_id,
             emp_fullname: req.body.emp_fullname,
             emp_birth_date: req.body.emp_birth_date,
             emp_marital_status: req.body.emp_marital_status,
@@ -222,36 +252,6 @@ export const updateEmployee = async (req, res) => {
                 edhi_emp_id: req.params.id
             }
         })
-        // const search = await models.employee_pay_history.findOne({
-        //     where: {
-        //         ephi_rate_exchange_date: ephi_rate_exchange_date,
-        //         ephi_emp_id: create.dataValues.emp_id
-        //     }
-        // })
-        // if (search === null) {
-        //     const createEphi = await models.employee_pay_history.create({
-        //         ephi_emp_id: ephi_emp_id,
-        //         ephi_rate_salary: ephi_rate_salary,
-        //         ephi_pay_frequence: ephi_pay_frequence,
-        //         ephi_modified_date: ephi_modified_date,
-        //         ephi_rate_exchange_date: ephi_rate_exchange_date,
-        //     }, {
-        //         returning: true
-        //     })
-        //     console.log(createEphi)
-        // } else {
-        //     const updateEphi = await models.employee_pay_history.update({
-        //         ephi_rate_salary: ephi_rate_salary,
-        //         ephi_pay_frequence: ephi_pay_frequence,
-        //         ephi_modified_date: ephi_modified_date,
-        //     },{
-        //         where: {
-        //             ephi_rate_exchange_date: ephi_rate_exchange_date,
-        //             ephi_emp_id: ephi_emp_id
-        //         }
-        //     })
-        //     console.log(updateEphi)
-        // }
         updateEdhi[0] === 1 ?
             res.status(200).json({message: "Sukses update Employee"}) :
             res.status(404).json({message: `ID Employee ${req.params.id} not found!`})

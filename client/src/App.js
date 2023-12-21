@@ -63,7 +63,9 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Dashboard */}
         <Route path="/" index element={<Dashboard />} />
+        {/* Payment */}
         <Route path="/payment" element={<Payment />}>
           <Route index element={<Bank />} />
           <Route
@@ -75,6 +77,7 @@ function App() {
           <Route path="/payment/top-up" index element={<TopUp />} />
           <Route path="/payment/transaction" index element={<Transaction />} />
         </Route>
+        {/* HR */}
         <Route path="/hr" element={<HrNav />}>
           <Route path="/hr/department" index element={<Department />} />
           <Route path="/hr/employee" element={<Employee />} />

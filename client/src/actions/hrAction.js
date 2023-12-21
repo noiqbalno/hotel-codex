@@ -37,6 +37,7 @@ export const GetDepartment = (data) => {
             data: data,
             timeout: 120000
         }).then((res) => {
+            console.log(res)
             dispatch({
                 type: GET_DEPARTMENT,
                 payload: {
